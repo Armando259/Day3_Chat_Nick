@@ -1,0 +1,20 @@
+{% extends 'landing.html' %}
+
+{% block content %}
+  <h2>Event List</h2>
+  <ul>
+    {% for event in events %}
+      <li>
+        <strong>{{ event.name }}</strong><br>
+        Status: {{ event.get_status_display }}<br>
+        Affected Brand: {{ event.affected_brand }}<br>
+        Description: {{ event.description }}<br>
+        Malicious URL: <a href="{{ event.malicious_url }}">{{ event.malicious_url }}</a><br>
+        Created on: {{ event.creation_datetime }}<br>
+        <a href="{% url 'main:edit_event' event.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'main:delete_event' event.id %}" class="btn btn-danger">Delete</a>
+        <hr>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}

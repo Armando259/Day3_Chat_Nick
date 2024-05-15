@@ -1,0 +1,75 @@
+{% extends "landing.html" %}
+
+{% block content %}
+
+    <form action="{% url 'main:pretrazi_eventove' %}" method="get" class="search-form">
+        <input type="text" name="q" placeholder="Pretraži događaje">
+        <button type="submit">Pretraži</button>
+    </form>
+
+    <div class="container">
+        <br/>
+        <h2>Rezultati pretrage za "{{ query }}"</h2>
+        <br/>    
+
+        <div class="container d-flex justify-content-center mt-50 mb-50">
+            <div class="row">
+                {% for event in events %}
+                    <div class="col-md-4 mt-2">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-img-actions">
+                                    {% if event.image %}
+                                        <img src="{{ event.image.url }}" class="card-img img-fluid" width="96" height="350" alt="" style="width: 400px; height: 350px;">
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-body bg-light text-center">
+                                <div class="mb-2">
+                                    <h6 class="font-weight-semibold mb-2">
+                                        <h3 href="#" class="text-default mb-2" data-abc="true">{{ event.name }}</h3>
+                                    </h6>
+                                </div>
+                                <p style="color: #777; margin-top: 10px;">{{ event.description }}</p>
+                                <h3 class="mb-0 font-weight-semibold">{{ event.date }}</h3>
+
+                               
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>Nema rezultata za pretragu.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if button pressed
+        $(document).on('click', '#add-event', function(e){
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: '/calendar/add/' ,
+                data: {
+                    event_id: $(this).val(),
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    action: 'post'
+                },
+                success: function(json){
+                    console.log(json)
+                    document.getElementById('calendar_quantity').textContent = json.qty;
+                    location.reload();
+                },
+                error: function(xhr, errmsg, err){
+                    // Handle error
+                }
+            });
+        })
+    </script>
+
+    <br/>
+    <br/>
+
+{% endblock %}
